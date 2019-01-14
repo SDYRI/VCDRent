@@ -1,0 +1,87 @@
+﻿@model VCDRent.Models.ApplicationUser
+@inject SignInManager<ApplicationUser> SignInManager
+@inject UserManager<ApplicationUser> UserManager
+@inject RoleManager<ApplicationRole> RoleManager
+@inject VCDRent.Data.ApplicationDbContext Context
+@{
+
+    ApplicationUser appUser = await UserManager.GetUserAsync(User);
+
+}
+<aside class="main-sidebar">
+    <!-- sidebar: style can be found in sidebar.less -->
+    <section class="sidebar">
+        <!-- Sidebar user panel -->
+        @if (Model != null)
+        {
+            <div class="user-panel">
+                <div class="pull-left image">
+                    <img src="@Model.profilePictureUrl" class="img-circle profilePicture" alt="User Image">
+                </div>
+                <div class="pull-left info">
+                    <p>@Model.FirstName @Model.LastName</p>
+                    <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
+                </div>
+            </div>
+
+            @if (appUser != null)
+            {
+            <ul class="sidebar-menu" data-widget="tree">
+                <li class="header">@VCDRent.MVC.Pages.Dashboard.Name</li>
+
+                <li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.Home.Controller)">
+                    <a href="@VCDRent.MVC.Pages.Home.Url">
+                        <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.Home.Name</span>
+                    </a>
+                </li>
+
+                <li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.MemberManage.Controller)">
+                    <a href="@VCDRent.MVC.Pages.MemberManage.Url">
+                        <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.MemberManage.Name</span>
+                    </a>
+                </li>
+
+                <li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.MemberConfirmContactManage.Controller)">
+                    <a href="@VCDRent.MVC.Pages.MemberConfirmContactManage.Url">
+                        <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.MemberConfirmContactManage.Name</span>
+                    </a>
+                </li>
+
+                <li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.ReportContactPersonManage.Controller)">
+                    <a href="@VCDRent.MVC.Pages.ReportContactPersonManage.Url">
+                        <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.ReportContactPersonManage.Name</span>
+                    </a>
+                </li>
+
+                <li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.ConfirmContactManage.Controller)">
+                    <a href="@VCDRent.MVC.Pages.ConfirmContactManage.Url">
+                        <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.ConfirmContactManage.Name</span>
+                    </a>
+                </li>
+
+                <li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.PackageManage.Controller)">
+                    <a href="@VCDRent.MVC.Pages.PackageManage.Url">
+                        <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.PackageManage.Name</span>
+                    </a>
+                </li>
+
+                <li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.KnowThisManage.Controller)">
+                    <a href="@VCDRent.MVC.Pages.KnowThisManage.Url">
+                        <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.KnowThisManage.Name</span>
+                    </a>
+                </li>
+
+                @*<li class="@Html.IsSelected(controller: VCDRent.MVC.Pages.ApplicationUser.Controller)">
+            <a href="@VCDRent.MVC.Pages.ApplicationUser.Url">
+                <i class="fa fa-h-square"></i> <span>@VCDRent.MVC.Pages.ApplicationUser.Name</span>
+            </a>
+        </li>*@
+
+            </ul>
+        }
+
+    }
+
+</section>
+<!-- /.sidebar -->
+</aside>

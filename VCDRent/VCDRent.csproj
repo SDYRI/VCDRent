@@ -1,0 +1,63 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+    <UserSecretsId>aspnet-netcore-FE586822-D2E5-4D23-BE70-C9D2856D4FF5</UserSecretsId>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\Debug\VCDRent\</OutputPath>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="wwwroot\scripts\**" />
+    <Content Remove="wwwroot\scripts\**" />
+    <EmbeddedResource Remove="wwwroot\scripts\**" />
+    <None Remove="wwwroot\scripts\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20180623203458_initialdb.cs" />
+    <Compile Remove="Migrations\20180623203458_initialdb.Designer.cs" />
+    <Compile Remove="Migrations\20180831233253_newTable.cs" />
+    <Compile Remove="Migrations\20180831233253_newTable.Designer.cs" />
+    <Compile Remove="Migrations\20180831233804_00000000000000_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20180831233804_00000000000000_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20180831234134_CreateIdentitySchema.cs" />
+    <Compile Remove="Migrations\20180831234134_CreateIdentitySchema.Designer.cs" />
+    <Compile Remove="Migrations\20181008084347_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008084744_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008085015_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008085324_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008101629_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008110038_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008110544_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008114855_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008115532_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008115952_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008120135_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008120622_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008120902_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008165829_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008195522_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008214204_TwoInitial.cs" />
+    <Compile Remove="Migrations\20181008220040_TwoInitial.cs" />
+    <Compile Remove="Migrations\20190114045647_ref_relation.cs" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <PackageReference Include="EPPlus" Version="4.5.2.1" />
+	<PackageReference Include="Microsoft.AspNetCore.App" />
+    <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.1.2" PrivateAssets="All" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.5" PrivateAssets="All" />
+    <PackageReference Include="MySql.Data.EntityFrameworkCore" Version="8.0.12" />
+    <PackageReference Include="Sendgrid" Version="9.10.0" />
+  </ItemGroup>
+
+
+  <ItemGroup>
+    <Folder Include="wwwroot\uploads\" />
+  </ItemGroup>
+
+</Project>

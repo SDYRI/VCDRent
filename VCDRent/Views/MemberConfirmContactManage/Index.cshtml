@@ -1,0 +1,173 @@
+﻿@{
+    var Title = "";
+    var icon = "";
+
+    Title = "Member Confirm";
+    icon = "fa-h-square";
+
+
+    ViewData["Title"] = Title;
+    Layout = "_AdminlteNetcore";
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title text-primary"><i class="fa @icon"></i> @ViewData["Title"] </h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                            title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div id="Grid"></div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+
+            </div>
+            <!-- /.box-footer-->
+        </div>
+        <!-- /.box -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+<!-- Template -->
+<script id="template" type="text/template">
+    <table cellspacing="100">
+        <tr>
+            <td>Nama Member</td>
+            <td>
+                <input id="memberID" name="memberID" value="{{:memberID}}" />
+            </td>
+        </tr>
+        <tr>
+            <td>Phone Persons are Confirmed</td>
+            <td>
+                <input id="confirmcontactID" name="confirmcontactID" value="{{:confirmcontactID}}" />
+            </td>
+        </tr>
+        <tr>
+            <td>Persons Confirmed</td>
+            <td>
+                {{if verificationMemberConfirmContact}}
+                <input type="checkbox" id="verificationMemberConfirmContact" name="verificationMemberConfirmContact" checked="checked" class="e-field e-checkbox" style="width:30px" />
+                {{else}}
+                <input type="checkbox" id="verificationMemberConfirmContact" name="verificationMemberConfirmContact" class="e-field e-checkbox" style="width:30px" />
+                {{/if}}
+            </td>
+        </tr>
+    </table>
+</script>
+<!-- /.Template -->
+
+@section Styles{
+
+}
+
+@section Scripts{
+
+    <script type="text/javascript">
+
+        var dataManagerMember = ej.DataManager({
+            url: "/api/Member",
+            adaptor: new ej.WebApiAdaptor(),
+            offline: true
+        });
+
+        var dataManagerConfirmContact = ej.DataManager({
+            url: "/api/ConfirmContact",
+            adaptor: new ej.WebApiAdaptor(),
+            offline: true
+        });
+
+        $(function () {
+
+            var dataManager = ej.DataManager({
+                url: "/api/MemberConfirmContact",
+                adaptor: new ej.WebApiAdaptor(),
+                offline: true
+            });
+
+            dataManager.ready.done(function (e) {
+                $("#Grid").ejGrid({
+                    dataSource: ej.DataManager({
+                        json: e.result,
+                        adaptor: new ej.remoteSaveAdaptor(),
+                        insertUrl: "/api/MemberConfirmContact/Insert",
+                        updateUrl: "/api/MemberConfirmContact/Edit",
+                    }),
+                    create: "createNameToolbar",
+                    toolbarSettings:
+                        {
+                            showToolbar: true,
+                            toolbarItems: ["add", "edit", "update", "cancel", "search", "printGrid"]
+                        },
+
+                    editSettings: {
+                        allowAdding: true,
+                        allowEditing: true,
+                        allowDeleting: true,
+                        showDeleteConfirmDialog: true,
+                        editMode: "dialogtemplate",
+                        dialogEditorTemplateID: "#template",
+                        titleColumn: "NamePackage",
+                    },
+                    isResponsive: true,
+                    enableResponsiveRow: true,
+                    allowSorting: true,
+                    allowSearching: true,
+                    allowFiltering: true,
+                    filterSettings: {
+                        filterType: "excel",
+                        maxFilterChoices: 100,
+                        enableCaseSensitivity: false
+                    },
+                    allowPaging: true,
+                    pageSettings: { pageSize: 10, printMode: ej.Grid.PrintMode.CurrentPage },
+                    columns: [
+                        { field: "registraiondateMemberConfirm", headerText: 'Confirm Date', editType: "datepicker", format: "{0:MMMM/dd/yyyy}", validationRules: { required: true }, allowEditing: true },
+                        { field: "memberID", headerText: 'Member Name', isPrimaryKey: true, foreignKeyField: "memberID", foreignKeyValue: "fullnameMember", dataSource: dataManagerMember, validationRules: { required: true }, allowEditing: true },
+                        { field: "confirmcontactID", headerText: 'Name Confirm Contact', foreignKeyField: "confirmcontactID", foreignKeyValue: "nameConfirmContact", dataSource: dataManagerConfirmContact, validationRules: { required: true }, allowEditing: true },
+                        { field: "confirmcontactID", headerText: 'Phone Confirm Contact', isPrimaryKey: true, foreignKeyField: "confirmcontactID", foreignKeyValue: "phonenumberConfirmContact", dataSource: dataManagerConfirmContact, validationRules: { required: true }, allowEditing: true },
+                        { field: "verificationMemberConfirmContact", headerText: 'Persons Confirmed', type: "boolean", editType: "booleanedit", defaultValue: false, validationRules: { required: false }, allowEditing: true },
+                    ],
+                    actionComplete: "complete",
+                    actionBegin: "begin",
+                });
+            });
+
+        });
+
+        function complete(args) {
+            $("#verificationMemberConfirmContact").ejCheckBox();
+
+            $('#memberID').ejDropDownList({
+                "dataSource": dataManagerMember,
+                "fields": { text: "fullnameMember", value: 'memberID' },
+                "itemsCount": 10,
+                "allowVirtualScrolling": true
+            });
+
+            $('#confirmcontactID').ejDropDownList({
+                "dataSource": dataManagerConfirmContact,
+                "fields": { text: "phonenumberConfirmContact", value: 'confirmcontactID' },
+                "itemsCount": 10,
+                "allowVirtualScrolling": true
+            });
+
+        }
+
+    </script>
+}

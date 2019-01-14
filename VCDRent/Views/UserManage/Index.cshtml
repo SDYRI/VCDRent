@@ -1,0 +1,214 @@
+﻿@inject UserManager<ApplicationUser> UserManager
+@inject VCDRent.Services.CoreUtilityService utility
+@{
+    var Title = "";
+    var icon = "";
+
+    Title = "User Manager";
+    icon = "fa-h-square";
+
+
+    ViewData["Title"] = Title;
+    Layout = "_AdminlteNetcore";
+
+    ApplicationUser appUser = await UserManager.GetUserAsync(User);
+}
+
+<!-- Content Wrapper. Contains page content -->
+<div class="content-wrapper">
+
+    <!-- Main content -->
+    <section class="content">
+        <!-- Default box -->
+        <div class="box">
+            <div class="box-header with-border">
+                <h3 class="box-title text-primary"><i class="fa @icon"></i> @ViewData["Title"]</h3>
+                <div class="box-tools pull-right">
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip"
+                            title="Collapse">
+                        <i class="fa fa-minus"></i>
+                    </button>
+                    <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="box-body">
+                <div id="Grid"></div>
+            </div>
+            <!-- /.box-body -->
+            <div class="box-footer">
+
+            </div>
+            <!-- /.box-footer-->
+        </div>
+        <!-- /.box -->
+    </section>
+    <!-- /.content -->
+</div>
+<!-- /.content-wrapper -->
+
+
+@section Styles{
+
+}
+
+@section Scripts{
+
+    <script type="text/x-jsrender" id="addUser">
+        <button class="btn btn-default addUser">Add</button>
+    </script>
+
+    <script type="text/javascript">
+        @{
+            if((utility.IsUserKelStruktur(appUser.Id)) && appUser.isSuperAdmin)
+            {
+                <text>
+                var statusAktif = true;
+                </text>
+            }
+            else
+            {
+                <text>
+                var statusAktif = false;
+                </text>
+            }
+        }
+
+        $(function () {
+
+            var dataManager = ej.DataManager({
+                url: "/api/User",
+                adaptor: new ej.WebApiAdaptor(),
+                offline: true
+            });
+
+            var dataManagerUnitKerja = ej.DataManager({
+                url: "/api/UnitKerja/GetUnitKerjaAktif",
+                adaptor: new ej.WebApiAdaptor(),
+                offline: true
+            });
+
+            var dataManagerStruktur = ej.DataManager({
+                url: "/api/StrukturUser/GetStrukturUserAktif",
+                adaptor: new ej.WebApiAdaptor(),
+                offline: true
+            });
+
+            dataManager.ready.done(function (e) {
+                $("#Grid").ejGrid({
+                    dataSource: ej.DataManager({
+                        json: e.result,
+                        adaptor: new ej.remoteSaveAdaptor(),
+                        insertUrl: "/api/User/Insert",
+                        removeUrl: "/api/User/Delete",
+                        updateUrl: "/api/User/Edit"
+                    }),
+                    create: "createNameToolbar",
+                    exportToExcelAction: "/api/User/ExcelExport",
+                    toolbarClick: 'clicked',
+
+                    @{
+                        if((utility.IsUserKelStruktur(appUser.Id)) && appUser.isSuperAdmin)
+                        {
+                            <text>
+                            toolbarSettings:
+                            {
+                                showToolbar: true,
+                                toolbarItems: ["edit", "update", "cancel", "search", "printGrid", "excelExport"],
+                                customToolbarItems: [{ templateID: "#addUser" }]
+                            },
+                            </Text>
+                        }
+                        else
+                        {
+                            <text>
+                            toolbarSettings:
+                            {
+                                showToolbar: true,
+                                toolbarItems: ["edit", "update", "cancel", "search", "printGrid", "excelExport"]
+                            },
+                            </Text>
+                        }
+                    }
+
+                    editSettings: {
+                        allowEditing: true,
+                        allowAdding: false,
+                        allowDeleting: true,
+                        showDeleteConfirmDialog: true,
+                        editMode: "dialog",
+                        titleColumn: "Email",
+                    },
+                    isResponsive: true,
+                    enableResponsiveRow: true,
+                    allowSorting: true,
+                    allowSearching: true,
+                    allowFiltering: true,
+                    filterSettings: {
+                        filterType: "excel",
+                        maxFilterChoices: 100,
+                        enableCaseSensitivity: false
+                    },
+                    allowPaging: true,
+                    pageSettings: { pageSize: 10, printMode: ej.Grid.PrintMode.CurrentPage },
+                    columns: [
+                        { field: "Id", headerText: 'Id', isPrimaryKey: true, isIdentity: true, visible: false },
+                        { field: "Email", headerText: 'Email', validationRules: { required: true }, allowEditing: statusAktif },
+                        { field: "FirstName", headerText: 'First Name', validationRules: { required: true }, allowEditing: statusAktif },
+                        { field: "LastName", headerText: 'Last Name', validationRules: { required: false }, allowEditing: statusAktif },
+                        { field: "StrukturUserID", headerText: 'Struktur User', foreignKeyField: "StrukturUserID", foreignKeyValue: "Nama_StrukturUser", dataSource: dataManagerStruktur, validationRules: { required: true }, allowEditing: statusAktif },
+                        { field: "UnitKerjaID", headerText: 'Unit Kerja', foreignKeyField: "UnitKerjaID", foreignKeyValue: "Nama_UnitKerja", dataSource: dataManagerUnitKerja, validationRules: { required: true }, allowEditing: statusAktif },
+                        { field: "Keterangan_User", headerText: 'Ketarangan User', validationRules: { required: false }, allowEditing: statusAktif },
+                        { field: "Status_User", headerText: 'aktif', type: "boolean", editType: "booleanedit", defaultValue: true, validationRules: { required: true }, allowEditing: statusAktif },
+                    ],
+                    actionComplete: "complete",
+                    actionBegin: "begin",
+                });
+            });
+
+
+
+        });
+
+        function clicked(sender) {
+            $target = $(sender.target);
+            if ($target.hasClass("addUser")) {
+                window.open('','_new').location.href='@Url.Action("Register", "Account")'; return false;
+            }
+        }
+
+        function complete(args) {
+
+            $("#Email").ejMaskEdit({
+                inputMode: 'Text',
+            });
+            $("#FirstName").ejMaskEdit({
+                inputMode: 'Text',
+            });
+            $("#LastName").ejMaskEdit({
+                inputMode: 'Text',
+            });
+            $("#Password").ejMaskEdit({
+                inputMode: 'Password',
+                validationRules: { required: true },
+            });
+            $("#ConfirmPassword").ejMaskEdit({
+                inputMode: 'Password',
+                validationRules: { required: true },
+            });
+
+            //if (args.requestType == 'beginedit') {
+            //    $("#" + this._id + "_dialogEdit").ejDialog({ title: "Edit Record" });
+            //    $("#Email").ejMaskEdit("disable");
+            //}
+
+            if (args.requestType == "save") {
+                this.refreshContent();
+            }
+
+        }
+
+
+    </script>
+}
